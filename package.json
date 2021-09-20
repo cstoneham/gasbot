@@ -1,0 +1,19 @@
+{
+  "name": "bolt-js-getting-started-app",
+  "version": "2.0.0",
+  "description": "Getting Started ⚡️ Bolt for JavaScript",
+  "main": "app.js",
+  "scripts": {
+    "ngrok": "ngrok http 3000",
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@slack/bolt": "^3.5.0",
+    "aws-sdk": "^2.991.0"
+  },
+  "devDependencies": {
+    "serverless-offline": "^8.1.0"
+  }
+}
