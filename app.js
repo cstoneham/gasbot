@@ -30,10 +30,10 @@ app.action('subscribe', async ({ body, ack, say }) => {
   await say(`Thanks <@${body.user.id}>, we'll notify you when gas hits ${threshold}`);
 
 	// Write this subscription to the DB
-	await writeSubscription(body.team.id, body.user.id, threshold)
+	await writeSubscription(body.team.id, body.user.id, body.channel.id, threshold)
 });
 
-app.command('/threshold', async ({ command, ack, respond }) => {
+app.command('/alert', async ({ command, ack, respond }) => {
   await ack();
 
   await respond({
@@ -75,14 +75,14 @@ app.message('goodbye', async ({ message, say }) => {
   await say(`See ya later, <@${message.user}> :wave:`);
 });
 
-const writeSubscription = async (teamid, userid, threshold) => {
+const writeSubscription = async (teamid, userid, channelid, threshold) => {
 	const TableName = 'gasbot'
 
 	const date = new Date();
 	const epoch = date.getTime();
 
 	// converting back to date-time
-	const timestamp = new Date(epoch);
+	const timestamp = new Date(epoch).getTime()
 
 	// Get original list if any
 	const originalRecord = await ddb.get({
@@ -106,6 +106,7 @@ const writeSubscription = async (teamid, userid, threshold) => {
 				teamid,
 				threshold,
 				timestamp,
+				channelid,
 		}
 	};
 

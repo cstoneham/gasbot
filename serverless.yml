@@ -1,8 +1,9 @@
-service: serverless-bolt-js
+service: serverless-gasbot
 frameworkVersion: '2'
 useDotenv: true
 provider:
   name: aws
+  region: us-west-2
   runtime: nodejs12.x
   environment:
     SLACK_SIGNING_SECRET: ${env:SLACK_SIGNING_SECRET}
