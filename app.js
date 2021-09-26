@@ -33,6 +33,32 @@ app.action('subscribe', async ({ body, ack, say }) => {
 	await writeSubscription(body.team.id, body.user.id, body.channel.id, threshold)
 });
 
+app.command('/start', async ({ command, ack, respond }) => {
+  await ack();
+
+	const frequency = command.text;
+	const enabled = true;
+	const channelid = command.channel_id
+	const teamid = command.team_id
+
+	if (frequency < 1) {
+		await respond('frequency must be > 1')
+
+		return
+	}
+
+  await respond(`Starting feed every ${frequency} minutes`);
+
+	// TODO: Write to DB (1) number of minutes (2) the teamid (3) channelid (4) status enabled/disabled
+	await writeGasbotTeams(
+		teamid,
+		channelid,
+		enabled,
+		frequency,
+	)
+});
+
+
 app.command('/alert', async ({ command, ack, respond }) => {
   await ack();
 
@@ -74,6 +100,22 @@ app.message('goodbye', async ({ message, say }) => {
   // say() sends a message to the channel where the event was triggered
   await say(`See ya later, <@${message.user}> :wave:`);
 });
+
+const writeGasbotTeams = async (teamid, channelid, enabled, frequency) => {
+	const TableName = 'gasbotteams';
+
+	const params = {
+		TableName,
+		Item: {
+			teamid,
+			channelid,
+			enabled,
+			frequency
+		}
+	};
+
+	return ddb.put(params).promise();	
+}
 
 const writeSubscription = async (teamid, userid, channelid, threshold) => {
 	const TableName = 'gasbot'
